@@ -1,8 +1,11 @@
 {
-  "name": "API Rotator",
-  "version": "1.0",
-  "description": "Automatically rotates API keys after each message.",
-  "author": "cowmane",
-  "entrypoint": "index.js",
-  "styles": ["style.css"]
+    "display_name": "API Key Rotator",
+    "loading_order": 9,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "cowmane",
+    "version": "1.0.0",
+    "homePage": "https://github.com/cowmane/apirotay"
 }
