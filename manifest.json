@@ -1,0 +1,8 @@
+{
+  "name": "API Rotator",
+  "version": "1.0",
+  "description": "Automatically rotates API keys after each message.",
+  "author": "cowmane",
+  "entrypoint": "index.js",
+  "styles": ["style.css"]
+}
