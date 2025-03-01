@@ -3,53 +3,52 @@
     let apiKeys = JSON.parse(localStorage.getItem(storageKey)) || [];
     let currentIndex = 0;
 
-    window.addEventListener("load", () => {
-        createUI();
+    // Load UI when SillyTavern starts
+    window.addEventListener("load", async () => {
+        await loadUI();
         hookIntoMessageSending();
     });
 
-    function createUI() {
-        const container = document.createElement("div");
-        container.id = "apiRotatorUI";
-        container.innerHTML = `
-            <h2>API Key Rotator</h2>
-            <div class="input-group">
-                <input type="text" id="newKey" placeholder="Enter API key">
-                <button id="addKeyBtn">Add</button>
-            </div>
-            <h3>API Keys</h3>
-            <div id="apiKeyList"></div>
-        `;
-
-        document.body.appendChild(container);
-        document.getElementById("addKeyBtn").addEventListener("click", addKey);
+    // Injects the settings UI
+    async function loadUI() {
+        const settingsHtml = await $.get(`scripts/extensions/third-party/apirotay/apirotay.html`);
+        $("#extensions_settings").append(settingsHtml);
+        
+        // Add event listeners
+        $("#apirotay_toggle").on("change", toggleAutoRotation);
+        $("#addKeyBtn").on("click", addKey);
         updateKeyList();
     }
 
+    function toggleAutoRotation(event) {
+        const enabled = $(event.target).prop("checked");
+        localStorage.setItem("apirotay_enabled", JSON.stringify(enabled));
+    }
+
     function updateKeyList() {
-        const listContainer = document.getElementById("apiKeyList");
-        listContainer.innerHTML = "";
+        const listContainer = $("#apiKeyList");
+        listContainer.empty();
 
         apiKeys.forEach((key, index) => {
             const isActive = index === currentIndex ? "🟣" : "⚫️";
-            const keyItem = document.createElement("div");
-            keyItem.className = "api-key-item";
-            keyItem.innerHTML = `
-                <span class="status">${isActive}</span>
-                <span class="key-box">${key}</span>
-                <button onclick="removeKey(${index})">X</button>
-            `;
-            listContainer.appendChild(keyItem);
+            const keyItem = $(`
+                <div class="api-key-item">
+                    <span class="status">${isActive}</span>
+                    <span class="key-box">${key}</span>
+                    <button onclick="removeKey(${index})">X</button>
+                </div>
+            `);
+            listContainer.append(keyItem);
         });
 
         localStorage.setItem(storageKey, JSON.stringify(apiKeys));
     }
 
     function addKey() {
-        const newKey = document.getElementById("newKey").value.trim();
+        const newKey = $("#newKey").val().trim();
         if (newKey) {
             apiKeys.push(newKey);
-            document.getElementById("newKey").value = "";
+            $("#newKey").val("");
             updateKeyList();
         }
     }
